@@ -10,4 +10,7 @@
       the License.
       -->
     <string name="app_name">AndroidDevChallenge</string>
+    <string name="time_configuration_question">How long do you want to set a timer for?</string>
+    <string name="seconds">%d seconds</string>
+    <string name="seconds_to_go">%d seconds to go!</string>
 </resources>

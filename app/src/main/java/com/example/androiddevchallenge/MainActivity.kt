@@ -18,44 +18,37 @@ package com.example.androiddevchallenge
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.lifecycle.lifecycleScope
+import com.example.androiddevchallenge.configure.ConfigurationComponent
+import com.example.androiddevchallenge.configure.Render
+import com.example.androiddevchallenge.models.Configuration
+import com.example.androiddevchallenge.timer.Render
+import com.example.androiddevchallenge.timer.TimerComponent
 import com.example.androiddevchallenge.ui.theme.MyTheme
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
+            val shouldShowConfigurationScreen = remember { mutableStateOf(true) }
+            val currentConfiguration = remember { mutableStateOf<Configuration?>(null) }
+
+            fun startTimer(configuration: Configuration) {
+                shouldShowConfigurationScreen.value = false
+                currentConfiguration.value = configuration
+            }
+
             MyTheme {
-                MyApp()
+                if (shouldShowConfigurationScreen.value) {
+                    ConfigurationComponent(lifecycleScope, ::startTimer).Render()
+                } else {
+                    currentConfiguration.value?.let { TimerComponent(lifecycleScope, it).Render() }
+                }
             }
         }
     }
 }
 
-// Start building your app here!
-@Composable
-fun MyApp() {
-    Surface(color = MaterialTheme.colors.background) {
-        Text(text = "Ready... Set... GO!")
-    }
-}
-
-@Preview("Light Theme", widthDp = 360, heightDp = 640)
-@Composable
-fun LightPreview() {
-    MyTheme {
-        MyApp()
-    }
-}
-
-@Preview("Dark Theme", widthDp = 360, heightDp = 640)
-@Composable
-fun DarkPreview() {
-    MyTheme(darkTheme = true) {
-        MyApp()
-    }
-}
